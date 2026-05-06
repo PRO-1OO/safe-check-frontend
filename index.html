@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Проверка ссылок</title>
+</head>
+<body style="font-family: Arial; text-align:center; margin-top:50px;">
+
+<h1>Проверка ссылки</h1>
+
+<input id="url" placeholder="Введите ссылку" style="width:300px; padding:10px;">
+<br><br>
+
+<button onclick="checkUrl()" style="padding:10px 20px;">Проверить</button>
+
+<div id="result" style="margin-top:20px; font-size:20px;"></div>
+
+<script>
+async function checkUrl() {
+    let url = document.getElementById("url").value;
+    let result = document.getElementById("result");
+
+    if (!url) {
+        result.innerHTML = "Введите ссылку";
+        return;
+    }
+
+    if (!url.startsWith("http")) {
+        url = "https://" + url;
+    }
+
+    result.innerHTML = "Проверка...";
+
+    try {
+        let res = await fetch("https://REPLACE_BACKEND_URL/check", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({url})
+        });
+
+        let data = await res.json();
+
+        if (data.safe) {
+            result.innerHTML = "✅ Безопасно";
+        } else {
+            result.innerHTML = "❌ Опасно";
+        }
+
+    } catch {
+        result.innerHTML = "Ошибка";
+    }
+}
+</script>
+
+</body>
+</html>
